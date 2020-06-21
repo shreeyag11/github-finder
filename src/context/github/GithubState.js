@@ -10,6 +10,15 @@ import {
     GET_REPOS
 } from '../types';
 
+let githubClientToken;
+
+if (process.env.NODE_ENV !== 'production') {
+    githubClientToken = process.env.REACT_APP_GITHUB_TOKEN;
+}
+else {
+    githubClientToken = process.env.GITHUB_TOKEN;
+}
+
 const GithubState = props => {
     const initialState = {
         users: [],
@@ -23,7 +32,7 @@ const GithubState = props => {
     // Search Users
     const searchUser = async text => {
         setLoading();
-        const res = await axios.get(`http://api.github.com/search/users?q=${text}&${process.env.REACT_APP_GITHUB_TOKEN}`);
+        const res = await axios.get(`http://api.github.com/search/users?q=${text}&${githubClientToken}`);
         dispatch({
             type: SEARCH_USERS,
             payload: res.data.items
@@ -33,7 +42,7 @@ const GithubState = props => {
     // Get User
     const getUser = async (username) => {
         setLoading();
-        const res = await axios.get(`http://api.github.com/users/${username}?${process.env.REACT_APP_GITHUB_TOKEN}`);
+        const res = await axios.get(`http://api.github.com/users/${username}?${githubClientToken}`);
         dispatch({
             type: GET_USER,
             payload: res.data
@@ -43,7 +52,7 @@ const GithubState = props => {
     // Get Repos
     const getUserRepos = async (username) => {
         setLoading();
-        const res = await axios.get(`http://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&${process.env.REACT_APP_GITHUB_TOKEN}`);
+        const res = await axios.get(`http://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&${githubClientToken}`);
         dispatch({
             type: GET_REPOS,
             payload: res.data
